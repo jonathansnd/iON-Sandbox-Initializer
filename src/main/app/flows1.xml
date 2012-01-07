@@ -1,5 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:spring="http://www.springframework.org/schema/beans" version="CE-3.2.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:sfdc="http://www.mulesoft.org/schema/mule/sfdc" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:spring="http://www.springframework.org/schema/beans" xmlns:core="http://www.mulesoft.org/schema/mule/core" xmlns:scripting="http://www.mulesoft.org/schema/mule/scripting" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="CE-3.2.1" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/sfdc http://www.mulesoft.org/schema/mule/sfdc/4.0/mule-sfdc.xsd 
 http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd 
-http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd "></mule>
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd 
+http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mule/scripting/current/mule-scripting.xsd ">
+    <sfdc:config name="Salesforce" username="esb@integrationtest.com" password="jbond007" securityToken="KxqJNPYTJCq17lLMXRs65upt" doc:name="Salesforce"/>
+    <flow name="describeSFDCAccountFlow1" doc:name="describeSFDCAccountFlow1">
+        <inbound-endpoint address="http://localhost:65082/sfdc" exchange-pattern="request-response" doc:name="Generic"/>
+        <sfdc:describe-global doc:name="Salesforce"/>
+        <expression-transformer evaluator="groovy" expression="(List)payload.sobjects" doc:name="Expression"/>
+        <collection-splitter doc:name="Collection Splitter"/>
+        <expression-transformer evaluator="groovy" expression="(String)payload.name" doc:name="Expression"/>
+        <message-filter doc:name="Message">
+            <wildcard-filter pattern="*__c*" caseSensitive="true"/>
+        </message-filter>
+        <logger message="Object Name: #[payload]" level="INFO" doc:name="Object Name Logger"/>
+        <sfdc:describe-sobject type="#[payload]"></sfdc:describe-sobject>
+        <logger message="Object content: #[payload]" level="INFO" doc:name="Object Content Logger"/>
+    </flow>
+</mule>
