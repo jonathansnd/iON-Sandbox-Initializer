@@ -1,13 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:sfdc="http://www.mulesoft.org/schema/mule/sfdc" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:spring="http://www.springframework.org/schema/beans" xmlns:core="http://www.mulesoft.org/schema/mule/core" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="CE-3.2.1" xsi:schemaLocation="
-http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd 
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" 
+	xmlns:http="http://www.mulesoft.org/schema/mule/http" 
+	xmlns:sfdc="http://www.mulesoft.org/schema/mule/sfdc" 
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" 
+	xmlns:spring="http://www.springframework.org/schema/beans" 
+	xmlns:core="http://www.mulesoft.org/schema/mule/core" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:vm="http://www.mulesoft.org/schema/mule/vm"
+	version="CE-3.2.1"
+xsi:schemaLocation="http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd 
 http://www.mulesoft.org/schema/mule/sfdc http://www.mulesoft.org/schema/mule/sfdc/4.0/mule-sfdc.xsd 
 http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd 
-http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd ">
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd 
+http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/3.2/mule-vm.xsd">
     <sfdc:config name="Salesforce" username="dummy" password="dummy" securityToken="dummy" doc:name="Salesforce"/>
     <flow name="describeSFDCAccountFlow1" doc:name="describeSFDCAccountFlow1">
-        <inbound-endpoint address="http://localhost:65082/sfdc" doc:name="HTTP">
+        <inbound-endpoint address="http://localhost:65082/sfdc" doc:name="HTTP" exchange-pattern="request-response">
             <response> 
                 <object-to-string-transformer/>  
                 <message-properties-transformer scope="outbound"> 
@@ -38,15 +47,15 @@ http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/cor
 					<add-message-property key="tokenDest" value="#[groovy:payload.tokenDest]" />
 				</message-properties-transformer>
 				
-				<logger message="After property set, property: #[header:SESSION:userOrig]" level="INFO" doc:name="Property Logger"/>
+				<logger message="After property set, property: #[header:session:userOrig]" level="INFO" doc:name="Property Logger"/>
 						
                 <processor-chain>
                 	<!-- Describe account objects -->
-                    <sfdc:describe-global username="#[header:SESSION:userOrig]" password="#[header:SESSION:passOrig]" securityToken="#[header:SESSION:tokenOrig]" doc:name="Salesforce"/>
+                    <sfdc:describe-global username="#[header:session:userOrig]" password="#[header:session:passOrig]" securityToken="#[header:session:tokenOrig]" doc:name="Salesforce"/>
                     <expression-transformer evaluator="groovy" expression="(List)payload.sobjects" doc:name="Expression"/>
                     
                     <!-- Splitter works as a foreach. For each of the objects received will execute the rest of the flow -->
-                    <collection-splitter doc:name="Collection Splitter"/>
+<!--                    <collection-splitter doc:name="Collection Splitter"/>-->
                     <expression-transformer evaluator="groovy" expression="(String)payload.name" doc:name="Expression"/>
                     
                     <!-- Filter messages (for testing purposes) -->
@@ -54,31 +63,55 @@ http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/cor
 <!--                        <wildcard-filter pattern="*FN__FindNearby__c*" caseSensitive="true"/>-->
                         <wildcard-filter pattern="*__c*" caseSensitive="true"/>
                     </message-filter>
-                    
-                    <collection-aggregator-router timeout="6000" failOnTimeout="false" >
-						<payload-type-filter expectedType="java.util.ArrayList"/>
-					</collection-aggregator-router>
+                  
                     
                     <logger message="Object Name: #[payload]" level="INFO" doc:name="Object Name Logger"/>
-                    
+                                        
 	                <!-- Describe each object -->  
 <!--                    <sfdc:describe-sobject type="#[payload]" username="#[header:SESSION:userOrig]" password="#[header:SESSION:passOrig]" securityToken="#[header:SESSION:tokenOrig]"></sfdc:describe-sobject>-->
                     
 <!--                    <logger message="Object content: #[groovy:payload.getClass().getName()]" level="INFO" doc:name="Object Content Logger"/>-->
                     
-                    <custom-transformer class="com.mulesoft.utils.ObjectNamesHTMLTransformer" />
+                <custom-transformer class="com.mulesoft.util.ObjectNamesHTMLTransformer" />
+<!--                <vm:outbound-endpoint path="ObjectProcessor" exchange-pattern="request-response" />-->
                 </processor-chain>
-            </when>
+           </when>
         </choice>
     </flow>
 <!--    <flow name="Flow2" doc:name="Flow2">-->
-<!--        <http:inbound-endpoint exchange-pattern="request-response" host="localhost" port="8081" doc:name="HTTP">-->
-<!--         <response> -->
-<!--                <object-to-string-transformer/>  -->
-<!--                <message-properties-transformer scope="outbound"> -->
-<!--                    <add-message-property key="Content-type" value="text/html"/> -->
-<!--                </message-properties-transformer> -->
-<!--            </response>-->
-<!--        </http:inbound-endpoint>-->
+<!--        <vm:inbound-endpoint path="ObjectProcessor" exchange-pattern="request-response"/>-->
+<!--        <custom-transformer class="com.mulesoft.util.ObjectNamesHTMLTransformer" />-->
+<!--        <logger message="Flow2: payload: #[payload]" level="INFO" doc:name="Object Name Logger"/>-->
+<!--        -->
+<!--        <logger message="Flow2, message received, property: #[header:session:userOrig]" level="INFO" doc:name="Property Logger"/>-->
+<!--        <logger message="Flow2, value received: #[groovy:payload]" level="INFO" doc:name="Property Logger"/>-->
+<!--		-->
 <!--    </flow>-->
+    <flow name="Flow3" doc:name="Flow3">
+    	<inbound-endpoint address="http://localhost:65082/results" doc:name="HTTP" exchange-pattern="request-response">
+            <response> 
+                <object-to-string-transformer/>  
+                <message-properties-transformer scope="outbound"> 
+                    <add-message-property key="Content-type" value="text/html"/> 
+                </message-properties-transformer> 
+            </response>
+        </inbound-endpoint>
+        <choice doc:name="Choice">
+            <when expression="inbound:http.method=GET" evaluator="header">
+                <logger message="Flow3, GET payload: #[payload]" level="INFO" doc:name="Property Logger"/>
+
+            </when>
+            <when expression="inbound:http.method=POST" evaluator="header">
+            	<http:body-to-parameter-map-transformer />
+            	<logger message="Flow3, POST payload: #[payload]" level="INFO" doc:name="Property Logger"/>
+            	<logger message="Flow3, POST payload contents: #[groovy:payload.objectsCombo]" level="INFO" doc:name="Property Logger"/>
+            	<logger message="Flow3, POST payload contents: #[groovy:payload.userOrig]" level="INFO" doc:name="Property Logger"/>
+            	<logger message="Flow3, POST payload contents: #[groovy:payload.userDest]" level="INFO" doc:name="Property Logger"/>
+            
+            </when>
+        </choice>
+        <logger message="Flow3, payload: #[payload]" level="INFO" doc:name="Property Logger"/>
+        
+    </flow>
+     
 </mule>

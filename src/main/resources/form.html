@@ -1,15 +1,37 @@
 <html>
+	<head>
+		<link rel="stylesheet" href="http://twitter.github.com/bootstrap/1.4.0/bootstrap.min.css">
+	</head>
+	<style type="text/css">
+	body {
+        padding-top: 60px;
+      }
+    </style>
 	<body>
-		<form action="http://localhost:65082/sfdc" method="post">
-			<p>Origin</p>
-			Username: <input type="text" name="userOrig" /><br/>
-			Password: <input type="password" name="passOrig" /><br/>
-			Token: <input type="text" name="tokenOrig" /><br/>
-			<p>Destination</p>
-			Username: <input type="text" name="userDest" /><br/>
-			Password: <input type="password" name="passDest" /><br/>
-			Token: <input type="text" name="tokenDest" /><br/>
-			<input type="submit" />
-		</form>
+		<div class="container">
+			<div class="row">
+				<div class="span12">
+					<form action="http://localhost:65082/sfdc" method="post">
+						<p>Origin</p>
+						Username: <input type="text" name="userOrig" /><br/>
+						Password: <input type="password" name="passOrig" /><br/>
+						Token:    <input type="text" name="tokenOrig" /><br/>
+						<br/>
+						<br/>
+						<br/>
+						<p>Destination</p>
+						Username: <input type="text" name="userDest" /><br/>
+						Password: <input type="password" name="passDest" /><br/>
+						Token: <input type="text" name="tokenDest" /><br/>
+						<input type="submit" value="Next" align="right" />
+					</form>
+				</div>
+				
+			</div>
+		
+			<footer>
+	       		<p>&copy; Mulesoft 2011</p>
+			</footer>
+    	</div>
 	</body>
 </html>
