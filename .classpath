@@ -1,11 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
-	<classpathentry exported="true" kind="con" path="MULE_RUNTIME"/>
+	<classpathentry kind="con" path="MULE_RUNTIME"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/MULE_RUNTIME"/>
 	<classpathentry kind="src" path="src/main/java"/>
 	<classpathentry kind="src" path="src/test/java"/>
 	<classpathentry kind="src" path="src/main/resources"/>
 	<classpathentry kind="src" path="src/test/resources"/>
 	<classpathentry kind="src" path="java"/>
+	<classpathentry kind="lib" path="bayeux-api-2.2.0.jar"/>
+	<classpathentry kind="lib" path="cometd-java-client-2.2.0.jar"/>
+	<classpathentry kind="lib" path="cometd-java-common-2.2.0.jar"/>
+	<classpathentry kind="lib" path="jetty-client-7.4.0.v20110414.jar"/>
+	<classpathentry kind="lib" path="jetty-http-7.4.0.v20110414.jar"/>
+	<classpathentry kind="lib" path="jetty-io-7.4.0.v20110414.jar"/>
+	<classpathentry kind="lib" path="jetty-util-7.4.0.v20110414.jar"/>
+	<classpathentry kind="lib" path="js-1.7R2.jar"/>
+	<classpathentry kind="lib" path="mule-devkit-annotations-3.2.jar"/>
+	<classpathentry kind="lib" path="mule-module-sfdc-4.2-20120106.121459-15.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

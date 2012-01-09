@@ -1,20 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns="http://www.mulesoft.org/schema/mule/core" 
-	xmlns:http="http://www.mulesoft.org/schema/mule/http" 
-	xmlns:sfdc="http://www.mulesoft.org/schema/mule/sfdc" 
-	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" 
-	xmlns:spring="http://www.springframework.org/schema/beans" 
-	xmlns:core="http://www.mulesoft.org/schema/mule/core" 
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xmlns:vm="http://www.mulesoft.org/schema/mule/vm"
-	version="CE-3.2.1"
-xsi:schemaLocation="http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd 
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:sfdc="http://www.mulesoft.org/schema/mule/sfdc" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:spring="http://www.springframework.org/schema/beans" version="CE-3.2.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:scripting="http://www.mulesoft.org/schema/mule/scripting"  	xmlns:vm="http://www.mulesoft.org/schema/mule/vm" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd 
 http://www.mulesoft.org/schema/mule/sfdc http://www.mulesoft.org/schema/mule/sfdc/4.0/mule-sfdc.xsd 
 http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd 
-http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd 
-http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/3.2/mule-vm.xsd">
-    <sfdc:config name="Salesforce" username="dummy" password="dummy" securityToken="dummy" doc:name="Salesforce"/>
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/3.2/mule-vm.xsd
+http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mule/scripting/current/mule-scripting.xsd">
+
+
+	<sfdc:config name="Salesforce" username="dummy" password="dummy" securityToken="dummy" doc:name="Salesforce"/>
+
+    
     <flow name="describeSFDCAccountFlow1" doc:name="describeSFDCAccountFlow1">
         <inbound-endpoint address="http://localhost:65082/sfdc" doc:name="HTTP" exchange-pattern="request-response">
             <response> 
@@ -60,7 +57,6 @@ http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/3.
                     
                     <!-- Filter messages (for testing purposes) -->
                     <message-filter doc:name="Message">
-<!--                        <wildcard-filter pattern="*FN__FindNearby__c*" caseSensitive="true"/>-->
                         <wildcard-filter pattern="*__c*" caseSensitive="true"/>
                     </message-filter>
                   
@@ -78,15 +74,7 @@ http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/3.
            </when>
         </choice>
     </flow>
-<!--    <flow name="Flow2" doc:name="Flow2">-->
-<!--        <vm:inbound-endpoint path="ObjectProcessor" exchange-pattern="request-response"/>-->
-<!--        <custom-transformer class="com.mulesoft.util.ObjectNamesHTMLTransformer" />-->
-<!--        <logger message="Flow2: payload: #[payload]" level="INFO" doc:name="Object Name Logger"/>-->
-<!--        -->
-<!--        <logger message="Flow2, message received, property: #[header:session:userOrig]" level="INFO" doc:name="Property Logger"/>-->
-<!--        <logger message="Flow2, value received: #[groovy:payload]" level="INFO" doc:name="Property Logger"/>-->
-<!--		-->
-<!--    </flow>-->
+
     <flow name="Flow3" doc:name="Flow3">
     	<inbound-endpoint address="http://localhost:65082/results" doc:name="HTTP" exchange-pattern="request-response">
             <response> 
@@ -107,11 +95,10 @@ http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/3.
             	<logger message="Flow3, POST payload contents: #[groovy:payload.objectsCombo]" level="INFO" doc:name="Property Logger"/>
             	<logger message="Flow3, POST payload contents: #[groovy:payload.userOrig]" level="INFO" doc:name="Property Logger"/>
             	<logger message="Flow3, POST payload contents: #[groovy:payload.userDest]" level="INFO" doc:name="Property Logger"/>
-            
+             	<custom-transformer class="com.mule.hackathon.SandboxInitializer" />
             </when>
         </choice>
         <logger message="Flow3, payload: #[payload]" level="INFO" doc:name="Property Logger"/>
         
     </flow>
-     
 </mule>
