@@ -30,7 +30,7 @@ public class ObjectNamesHTMLTransformer extends AbstractMessageTransformer{
 						"<div class=\"container\">" +
 						"<div class=\"row\">" +
 						"<div class=\"span16\">" +
-						"<form action=\"http://localhost:65082/results\" method=\"post\">" +
+						"<form action=\"https://jr-sfdcinit.muleion.com/results\" method=\"post\">" +
 						"<h1>Available Objects</h1>";
 		StringTokenizer stringtokenizer = new StringTokenizer(lPrices, ",");
 		sHTML += "<select size=\"20\" name=\"objectsCombo\" style=\"height:75%;width:100%;font-size:160%; \">";
